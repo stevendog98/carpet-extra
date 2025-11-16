@@ -21,7 +21,12 @@ jobs:
     - name: Grant execute permission to gradlew
       run: chmod +x gradlew
     - name: Build and run Gametest with Gradle
-      run: ./gradlew build runGametest
+      run: ./gradlew build
+    - name: Find correct JAR
+      id: findjar
+      run: |
+        output="$(find build/libs/ ! -name "*-dev.jar" ! -name "*-sources.jar" -type f -printf "%f\n")"
+        echo "jarname=$output" >> $GITHUB_OUTPUT
     - uses: actions/upload-artifact@v4
       with:
         name: Compiled artifacts for ${{ github.sha }}
@@ -31,3 +36,8 @@ jobs:
       with:
         name: Gametest results for ${{ github.sha }}
         path: build/junit.xml
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: Gametest results for ${{ github.sha }}
+        path: build/libs/${{ steps.findjar.outputs.jarname }}
