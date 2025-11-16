@@ -39,5 +39,5 @@ jobs:
     - uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: Gametest results for ${{ github.sha }}
+        name: Build JAR for ${{ github.sha }}
         path: build/libs/${{ steps.findjar.outputs.jarname }}
